@@ -1,0 +1,391 @@
+---
+title: "Time_Series_Learning"
+format:
+  html:
+    html-math-method: mathjax
+---
+
+# Stationary Time Series
+
+## Sampling properties of $\bar{X}_n, \; C_k \; \text{and} \; R_k$
+
+Let $X_1,X_2,...,X_n$ be a sample of size $n$ from a stationary time series with mean $\mu$ and auto covariance function at lag $k$, $\gamma(k)=\mathbb{E}[(X_t−\mu)(X_{t+k}−\mu)$.Then $\gamma(0)=\mathbb{E}[(X_t−\mu)2]=Var(X_t)$is constant for all $t$. Now we have the following natural estimators for $\mu, \gamma(k),\rho(k))$:
+
+### **What are Estimators?**
+
+An **estimator** is a **rule (or formula)** that tells you how to compute an estimate of some unknown population parameter using your sample data
+
+-   Parameter = true but unknown quantity (e.g. mean $\mu$, variance $\sigma^2$, auto covariance $\gamma(k)$)
+-   Estimator = function of sample data (random variable, before observing data)
+-   Estimate = numerical value you get after plugging in your data
+
+### **Estimator for** $\mu, \gamma(k),\rho(k))$
+
+-   $\text{For}\;\mu \;: \;\bar{X}_n = \frac{X_1 + X_2 + \cdots + X_n}{n}$
+
+-   $\text{For}\;\gamma(k) \;: \;C_k = \frac{1}{n} \sum_{t=1}^{n-k} (X_t - \bar{X})(X_{t+k} - \bar{X}), \quad k = 0,1,\dots,n-1$
+
+-   $\text{For}\;\rho(k)\;:\;R_k = \frac{C_k}{C_0}$
+
+### **Sampling properties for** $\bar{X}_n$
+
+Let $\bar{X}_n = \frac{X_1 + X_2 + \cdots + X_n}{n}$ be an estimator of $\mu$. Then
+
+-   $\mathbb{E}(\bar{X}_t) = \mu$
+
+-   $Var(\bar{X}_n) = \frac{1}{n} \sum_{k=-(n-1)}^{n-1} \left( 1 - \frac{|k|}{n} \right)\gamma(k).$
+
+#### **Intuition**
+
+-   This formula shows that the variance of the sample mean depends not only on the variance\
+    $\gamma(0)$, but also on the entire auto covariance structure of the series
+
+-   If the series is independent $\gamma(k) = 0$ for $k\ne0$, then it reduces to the classical result: $$ Var(\bar{X}_n) = \frac{\sigma^2}{n}$$
+
+### **Approximate distribution of $\bar{X}_n$ forlarge $n$**
+
+Assume that $\sum|\gamma(k)|<\infty$
+Then clearly, $\sum_{k=-n+1}^{n-1} \left(1-\frac{|k|}{n}\right)\gamma(k) \to \sum_{-\infty}^{\infty}\gamma(k)$ as $n \to \infty$.
+$$
+Var(\bar{X}_n) \approx \frac{1}{n} \sum_{k=-\infty}^{\infty} \gamma(k).
+$$
+- When $\{X_t\}$ is a **non-Gaussian** time series, we have the following approximate normal distribution for $\bar{X}_n$ for large $n$:
+
+  $$
+  \bar{X}_n \approx N\!\Big(\mu, \frac{1}{n} \sum_{k=-\infty}^{\infty} |\gamma(k)|\Big).
+  $$
+
+- When $\{X_t\}$ is a **Gaussian** time series, we have the following normal distribution for $\bar{X}_n$ for large $n$:
+
+  $$
+  \bar{X}_n \sim N\!\Big(\mu, \frac{1}{n} \sum_{k=-\infty}^{\infty} \gamma(k)\Big).
+  $$
+  - When $X_t$’s are **iid** with mean $\mu$ and variance $\sigma^2$, we have:  
+  $E(X_t) = \mu, \quad \gamma(0) = \sigma^2, \quad \gamma(k) = 0 \;\; (k \neq 0)$
+
+- Thus,  $Var(\bar{X}_n) \approx \tfrac{\sigma^2}{n}$
+
+- Hence,  
+  $$\bar{X}_n \approx N\!\Big(\mu, \tfrac{\sigma^2}{n}\Big)$$
+  
+#### **What is Gaussian time series**
+
+A time series $\{X_t\}$ is called a **Gaussian time series** if **every finite collection of points
+$$
+(X_{t_1},X_{t_2},\ldots,X_{t_m})
+$$
+has a **multivariate normal distribution**
+
+#### **Note**
+
+**multivariate normal distribution** is different from **every $X_t$ is normal since:
+
+Consider a random variable $Z \sim N(0,1)$ and define:
+$$
+X_1 = Z, \quad X_2 = -Z.
+$$
+
+- Individually: $X_1 \sim N(0,1)$ and $X_2 \sim N(0,1)$.  
+- Jointly: $(X_1, X_2)$ is **not a general bivariate Gaussian** — it is a degenerate distribution with correlation $-1$.
+
+For a random vector $(X_{t_1}, \dots, X_{t_m})$ to have a **proper multivariate Gaussian distribution**:
+
+- The covariance matrix $\Sigma$ must be:
+  - **Symmetric** ($\Sigma = \Sigma^\top$)  
+  - **Positive definite (PD)** $\;\;\to\;$ all eigenvalues strictly positive  
+
+This is equivalent to saying:
+
+- $\Sigma$ is **non-singular** (invertible).  
+- No row/column can be a **perfect linear combination** of others.
+
+### **Sampling Properties of $C_k$**
+
+Let  
+
+$$
+C_k = \frac{1}{n} \sum_{t=1}^{n-k} (X_t - \bar{X})(X_{t+k} - \bar{X}).
+$$  
+
+Then $C_k$ is an **asymptotically unbiased estimator** for $\gamma(k)$.  
+That is,  
+
+$$
+E(C_k) = \gamma(k).
+$$
+
+#### **Proof:**
+
+As we know, by definition of $C_k$,
+
+$$
+C_k = \frac{1}{n} \sum_{t=1}^{n-k} (X_t - \bar{X})(X_{t+k} - \bar{X}).
+$$  
+
+Then,
+
+$$
+\mathbb{E}(C_k) = \mathbb{E}[\frac{1}{n} \sum_{t=1}^{n-k} (X_t - \bar{X})(X_{t+k} - \bar{X})]
+$$  
+We have $n\to\infty$
+
+Then $\bar{X}_t\to\mu$
+
+and $\gamma(k)=\mathbb{E}[(X_t−\mu)(X_{t+k}−\mu)$
+
+$$
+\mathbb{E}(C_k) = \mathbb{E}[\frac{1}{n} \sum_{t=1}^{n-k} \gamma(k)]
+$$ 
+$= \frac{n-k}{n}\gamma(k)$\
+$= \gamma(k)$ as $n\to\infty$
+
+### Sampling Properties of $R_k$
+
+It is generally difficult to derive the exact sampling distribution of $R_k$, since it is the ratio of two estimators.  
+However, under the **null hypothesis** $H_0 : \rho(k) = 0$ (white noise, no autocorrelation), the distribution of $R_k$ has a simple asymptotic form.
+
+#### Important Result
+
+Under $H_0 : \rho(k) = 0$ for all $k$, as $n \to \infty$:
+
+- $\mathbb{E}[R_k] \approx 0$
+- $Var(R_k) \approx \tfrac{1}{n}$
+
+Thus,
+
+$$
+R_k \sim \mathcal{N}\!\Big(0, \tfrac{1}{n}\Big), \quad n \to \infty.
+$$
+#### Note
+
+This result tells us:
+
+- Approximately **95% of the sample autocorrelations** should fall between the bounds
+
+  $$
+  \pm \frac{1.96}{\sqrt{n}}
+  $$
+
+- In practice, these bounds are often approximated by  
+
+  $$
+  \pm \frac{2}{\sqrt{n}}
+  $$
+- **Recall that the acf value at $k=0$ is always 1**
+
+### Example 1: Time Series and it's ACF
+
+```{r include=FALSE,warning=FALSE}
+library(tidyverse)
+library(ggplot2)
+library(gridExtra)
+```
+
+```{r}
+ex1 <- c(
+  1.954,1.747,1.265,2.850,1.799,1.046,0.592,1.303,1.639,2.969,
+  3.113,4.228,0.900,2.189,2.135,1.394,0.636,0.191,1.498,0.472,
+  1.346,1.797,1.601,1.525,2.281,3.826,2.662,1.935,1.630,1.863,
+  1.240,0.831,3.788,3.420,4.226,2.125,2.897,0.641,0.416,2.005,
+  0.928,2.236,1.717,2.279,2.312,2.445,1.262,2.266,1.110,4.077
+)
+
+par(mfrow=c(2,1), mar=c(3,4,1,1), mgp=c(2,0.6,0)) 
+
+plot.ts(ex1,ylab = "Values")      
+acf(ex1,ylim=c(-1,1))
+
+```
+Since $n = 50$ and hence approximate $95\%$ bounds under the null hypothesis $H_0:\rho(k)=0$ are $\pm \frac{2}{50}=\pm0.28$.\
+Marked as the Blue Dashed lines here
+
+#### Note:
+
+- By  By definition, the autocorrelation function (ACF) at lag 0 is always equal to 1, as it represents the correlation of the series with itself.
+- If k is large relative to the sample size n, then the estimates $c_k$ and $r_k$ are very unreliable. The calculations are reasonable for n ≥ 50 and a general rule of thumb is to restrict calculations of $c_k$ and $r_k$ for $n \ge 50$ and $k \le n/4$
+
+###  **A portmantau test for the Null Hypothesis of $H_0 : \rho(k) = 0$**
+
+ $\sqrt{n} R_k \sim \mathcal{N}(0,1)$, we have $nR_k^2 \sim \chi^2_1$.
+ 
+ Therefore, for an arbitrary lag $\ell$:
+
+$$
+Q = n \sum_{k=1}^{\ell} R_k^2 \;\;\sim\;\; \chi^2_\ell
+$$
+
+- $Q$ is essentially the **sum of squared sample ACF values up to lag $\ell$**, scaled by $n$.  
+- Under the null hypothesis $H_0 : \rho(k) = 0$, $Q$ approximately follows a $\chi^2$ distribution with $\ell$ degrees of freedom.  
+- Large values of $Q$ → reject $H_0$, indicating that the time series is **not white noise**.
+
+### Example 2: Test for Hypothesis of $H_0 : \rho(k) = 0$
+![](images/Ex2.png)
+```{r}
+
+ex2 <- c(-0.062,-0.229,0.062,-0.104,-0.188)
+ex2_n <- 50
+ex2_l <- 5
+ex2_Q <- ex2_n*sum(ex2^2)
+
+ex2_prob <- pchisq(ex2_Q,df = ex2_l,lower.tail = FALSE)
+
+ex2_prob
+```
+ Here the probability is `r round(ex2_prob,3)`, certainly it lies out of the critical region and we do not reject the null hypothesis.
+
+![](images/Ex2_1.png)
+
+```{r}
+ex2_1 <- c( 0.709,0.367, 0.067,-0.131,-0.153,-0.160,-0.157,-0.134,-0.119,-0.070)
+
+ex2_1_n <- 100
+ex2_1_l <- 10
+
+ex2_1_Q <- ex2_1_n*sum(ex2_1^2)
+
+ex2_1_prob <- pchisq(ex2_1_Q,df = ex2_1_l,lower.tail = FALSE)
+
+ex2_1_prob
+
+ex2_1_lags <- 1:ex2_1_l
+ex2_1_critical <- 2/sqrt(ex2_1_n)
+
+plot(ex2_1_lags, ex2_1, type = "h", ylim = c(-1, 1),
+     xlab = "Lag k", ylab = expression(r[k]))
+
+abline(h = c(ex2_1_critical, -ex2_1_critical), lty = 2, col = "steelblue")
+abline(h = 0, col = "black")
+
+```
+
+### Short Summmary
+
+1. The **ACF**, like most other statistical inference techniques for time series,  
+   requires the series to be **reasonably long** (e.g. $n \geq 40$).  
+
+2. If the series $x_1, \dots, x_n$ contains a **linear trend** or is **non-stationary**,  
+   the plot of $r_k$ against lag $k$ **decreases very slowly** with $k$.  
+
+3. If a **periodic component** with period $d$ is present in the series,  
+   the ACF shows a **periodic pattern with period $d$** in the plot of $r_k$ against $k$.  
+
+4. If the sequence $x_1, \dots, x_n$ is **stationary**,  
+   the plot of $r_k$ against lag $k$ **decreases rapidly** as $k$ increases.
+   
+
+## Partial Correlations and Partial Autocorreations
+### Definitions:
+- The **partial correlation** between two variables $X$ and $Y$, controlling for a third variable $U$, measures the linear association between $X$ and $Y$ **after removing the effect of $U$**.  
+- It quantifies the residual relationship between $X$ and $Y$ that is **not explained by $U$**.  
+- Denoted as:
+  $$
+  \rho_{XY \mid U}.
+  $$
+#### **Example:**
+
+Let  
+$$
+X = a_1 + a_2U + Z_1, \quad Y = b_1 + b_2U + Z_2,
+$$  
+where $Z_1, Z_2$ are the residuals after regressing $X$ and $Y$ on $U$.  
+
+- The correlation $\text{cor}(Z_1, Z_2)$ is the **partial correlation** between $X$ and $Y$ given $U$.  
+- Notation: $\rho_{X,Y \mid U}$.
+
+### Interpretation
+
+- $\rho_{X,Y \mid U} = 0$:  
+  No linear association between $X$ and $Y$ after accounting for $U$.
+
+- $\rho_{X,Y \mid U} > 0$:  
+  A **positive association** between $X$ and $Y$, independent of $U$.  
+  In other words, once the influence of $U$ is partialled out, $X$ tends to increase when $Y$ increases.
+
+- $\rho_{X,Y \mid U} < 0$:  
+  A **negative association** between $X$ and $Y$, independent of $U$.
+  
+### PACF Definition
+- For a stationary time series $\{X_t\}$, the **PACF at lag $k$** measures the correlation between $X_t$ and $X_{t-k}$ **after removing the linear effect of the intermediate lags** $X_{t-1}, X_{t-2}, \dots, X_{t-k+1}$.  
+- In other words, PACF captures the **direct linear relationship** between $X_t$ and $X_{t-k}$, controlling for all values in between.  
+
+Mathematically:
+$$
+\pi_k = \mathrm{cor}(X_t, X_{t-k} \mid X_{t-1}, \dots, X_{t-k+1})
+$$
+
+
+#### Properties
+- The PACF $\pi_k$ plays a key role in time series modeling:  
+  - In an **AR(p)** process, the PACF cuts off after lag $p$ (becomes zero for $k > p$).  
+  - Hence, the PACF plot is often used to identify the order $p$ of an AR model.  
+
+
+#### Note
+The PACF at lag $k$ can also be expressed using conditional covariance and variance:
+
+$$
+\pi_k =
+\frac{\mathrm{Cov}(X_t, X_{t-k} \mid X_{t-1}, \dots, X_{t-k+1})}
+{\sqrt{\mathrm{Var}(X_t \mid X_{t-1}, \dots, X_{t-k+1}) \cdot 
+       \mathrm{Var}(X_{t-k} \mid X_{t-1}, \dots, X_{t-k+1})}}
+$$
+
+
+#### Intuition
+- **ACF**: overall correlation, includes indirect effects via intermediate lags.  
+- **PACF**: partial correlation, only the **direct effect** between $X_t$ and $X_{t-k}$.
+
+
+### How to compute ${\pi}_k$
+
+#### 1. Recursive Formula (Durbin–Levinson)
+
+- **Lag 1**:  
+  $$
+  \pi_1 = \rho(1)
+  $$
+
+- **Lag 2**:  
+  $$
+  \pi_2 = \frac{\rho(2) - \rho(1)^2}{1 - \rho(1)^2}
+  $$
+
+- **Lag 3**:  
+  $$
+  \pi_3 = \frac{\rho(3) - \pi_1 \rho(2) - \pi_2 \rho(1)}
+  {1 - \pi_1^2 - \pi_2^2}
+  $$
+
+Useful in exams when $\rho(k)$ values are given.
+
+
+#### 2. Yule–Walker Equations
+
+Solve the linear system:
+$$
+\begin{bmatrix}
+1 & \rho(1) & \cdots & \rho(k-1) \\
+\rho(1) & 1 & \cdots & \rho(k-2) \\
+\vdots & \vdots & \ddots & \vdots \\
+\rho(k-1) & \rho(k-2) & \cdots & 1
+\end{bmatrix}
+\begin{bmatrix}
+\phi_{k1} \\
+\phi_{k2} \\
+\vdots \\
+\phi_{kk}
+\end{bmatrix}
+=
+\begin{bmatrix}
+\rho(1) \\
+\rho(2) \\
+\vdots \\
+\rho(k)
+\end{bmatrix}
+$$
+
+The last coefficient $\phi_{kk}$ is the **PACF** at lag $k$:
+$$
+\pi_k = \phi_{kk}.
+$$
+
