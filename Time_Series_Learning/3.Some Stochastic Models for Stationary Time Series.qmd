@@ -1,27 +1,383 @@
 ---
-title: "2.Some Stochastic Models for Stationary Time Series"
+title: "3.Some Stochastic Models for Stationary Time Series"
 format:
   html:
     html-math-method: mathjax
 ---
+#Random Process
 
-## 1
+## White Noise
 
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+A **white noise (WN)** process is a sequence of uncorrelated random variables with:
+- Zero mean  
+- Constant finite variance  
+- No autocorrelation at nonzero lags  
 
-## Running Code
+Formally, a process $\{Z_t\}$ is white noise if:
+$$
+E(Z_t) = 0, \quad 
+Var(Z_t) = \sigma^2, \quad 
+\gamma_Z(k) = Cov(Z_t, Z_{t+k}) = 0 \;\; \text{for all } k \neq 0.
+$$
 
-When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+or,
+$$
+\{Z_t\} \sim WN(0, \sigma^2)
+$$
+
+### Note
+- WN requires **uncorrelatedness**, but not necessarily **independence**.  
+- The marginal distribution of $Z_t$ can be **any distribution** (Normal, Uniform, Bernoulli, etc.), as long as the above conditions hold.
+
+
+## Gaussian White Noise
+- If $\{Z_t\} \sim N(0,\sigma^2)$ and is white noise:  
+  - For Gaussian variables, **uncorrelated ⇒ independent**.  
+- Therefore **Gaussian WN is also Purely Random**.  
+
+
+## Purely Random Process (PR)
+A process $\{e_t\}$ is **purely random** if:
+- $E(e_t) = 0$
+- $Var(e_t) = \sigma^2 < \infty$
+- $\{e_t\}$ are **i.i.d.**
+
+### Note
+- PR is stronger than WN: it requires **independence** + **identically distributed**.  
+- Therefore:
+  $$
+  \text{PR} \subset \text{WN}
+  $$
+## Important Notes
+- Independence ⇒ uncorrelated, but  
+  - Uncorrelated ⇏ independent (except under Normality).  
+- In practice:  
+  - For **non-Gaussian data**, WN and PR are different.  
+  - Under **Normality**, the two concepts coincide.  
+- Implication for modeling:  
+  - WN is enough for many time series assumptions (e.g., ARMA residuals).  
+  - PR is stronger, ensures true randomness (iid innovations).
+
+## Autocorrelation Function (ACF) of White Noise
+
+Suppose $\{Z_t\} \sim WN(0,\sigma^2)$.
+
+### Autocovariance function (ACovF)
+$$
+\gamma_Z(k) = Cov(Z_t, Z_{t-k}) =
+\begin{cases}
+\sigma^2, & k=0 \\
+0, & k \neq 0
+\end{cases}
+$$
+### The corresponding ACF 
+$$
+\rho_Z(k) = \frac{\gamma_Z(k)}{\gamma_Z(0)} =
+\begin{cases}
+1, & k=0 \\
+0, & k \neq 0
+\end{cases}
+$$
+
+### Intuition
+- A white noise series has **no correlation at nonzero lags**.  
+- Its ACF equals **1 at lag 0** and **0 everywhere else**.  
+- On a correlogram, this appears as a single spike at lag 0, with all other values near 0 (up to sampling noise).
+
+### White noise Sample ACF Plot
 
 ```{r}
-1 + 1
+wn <- rnorm(1000, mean = 0, sd = 1)
+
+acf(wn, main = "ACF of White Noise")
 ```
 
-You can add options to executable code like this
+--- 
+## Linear Process
+
+We can build autocorrelated time series models by taking **linear combinations** of white noise $\{Z_t\}$.
+
+### Definition
+A **linear process** is defined as:
+$$
+X_t = \mu + \sum_{j=0}^\infty \psi_j Z_{t-j},
+$$
+where:
+- $\{Z_t\} \sim WN(0, \sigma^2)$ is white noise,
+- $\mu$ is a constant (the mean),
+- $\psi_j$ are real coefficients,
+- the infinite series converges in mean square.
+
+
+### Notes
+- White noise has no autocorrelation, but by combining lagged white noise terms with weights $\psi_j$, we create **serial correlation**.  
+- Different choices of $\psi_j$ generate different models:
+  - Finite nonzero $\psi_j$ → **MA(q)** model (moving average).  
+  - Infinite but decaying $\psi_j$ → **ARMA/ARIMA** models.  
+- This framework is the foundation of most real-world time series models.
+
+
+### Intuition
+- White noise alone is “pure randomness.”  
+- By mixing $Z_t, Z_{t-1}, Z_{t-2}, \dots$ with weights, we allow **past shocks** to influence $X_t$.  
+- Example:  
+  - If $X_t = Z_t + 0.5Z_{t-1}$, then $X_t$ depends not only on current noise but also on the past → introduces **autocorrelation**.
+  
+## Statistical Properties of a Linear Process
+
+Consider
+$$
+X_t = \mu + \sum_{j=0}^\infty \psi_j Z_{t-j}, \quad \{Z_t\} \sim WN(0,\sigma^2).
+$$
+
+### Mean
+Since $E(Z_t)=0$,
+$$
+E(X_t) = \mu
+$$
+
+
+### Variance
+Because white noise terms are uncorrelated,
+$$
+Var(X_t) = \sigma^2 \sum_{j=0}^\infty \psi_j^2
+$$
+
+- For $Var(X_t)$ to be finite, we require:
+  $$
+  \sum_{j=0}^\infty \psi_j^2 < \infty
+  $$
+  This is the **square summability condition**.
+
+
+### Why is this condition necessary?
+- If $\sum \psi_j^2 = \infty \;\;\Rightarrow\;\; Var(X_t)=\infty$ → not useful for modeling.  
+- If $\sum \psi_j^2 < \infty \;\;\Rightarrow\;\; Var(X_t)$ finite → process is well-defined.  
+
+
+### Stronger Condition
+Sometimes we require a stricter condition:
+$$
+\sum_{j=0}^\infty |\psi_j| < \infty
+$$
+- Ensures convergence **almost surely (a.s.)** or **in mean**.  
+- Stronger than square summability.
+
+
+## Autocovariance and Autocorrelation of a Linear Process
+
+Consider
+$$
+X_t = \mu + \sum_{j=0}^\infty \psi_j Z_{t-j}, 
+\quad \{Z_t\} \sim WN(0,\sigma^2).
+$$
+
+
+### Autocovariance Function (ACovF)
+
+Under the square summability condition $\sum_{j=0}^\infty \psi_j^2 < \infty$:
+
+$$
+\gamma_X(k) = Cov(X_t, X_{t+k})
+= E\Big[(X_t-\mu)(X_{t+k}-\mu)\Big]
+$$
+
+$$
+= \sigma^2 \sum_{j=0}^\infty \psi_j \psi_{j-k}, 
+\quad k \in \mathbb{Z}
+$$
+
+
+### Autocorrelation Function (ACF)
+
+$$
+\rho_X(k) = \frac{\gamma_X(k)}{\gamma_X(0)}
+= \frac{\sum_{j=0}^\infty \psi_j \psi_{j-k}}
+       {\sum_{j=0}^\infty \psi_j^2}
+$$
+
+
+### Remarks
+- If $\sum_{j=0}^\infty |\psi_j| < \infty$, the process is **weakly stationary**.  
+- Such processes are known as the **General Linear Process (GLP)**.
+
+### Note
+- GLP involves an infinite number of parameters $\psi_j$.  
+- This is difficult to estimate in practice, so in applications we usually restrict to **finite-order models** (e.g. MA(q)).
+
+
+## Wold Decomposition Theorem
+
+The **Wold decomposition** is a fundamental result in time series theory:
+
+> Every zero-mean, weakly stationary time series can be uniquely decomposed as the sum of a deterministic component and a stochastic (linear) component.
+
+
+### Theorem (Wold, 1938)
+
+Let $\{X_t\}$ be a zero-mean, weakly stationary process. Then there exists a unique representation:
+
+$$
+X_t = \mu + \sum_{j=0}^\infty \psi_j Z_{t-j} + V_t,
+$$
+
+where:
+- $\{Z_t\}$ is a white noise sequence with zero mean and finite variance,  
+- $\{\psi_j\}$ are absolutely summable ($\sum_{j=0}^\infty |\psi_j| < \infty$),  
+- $V_t$ is **deterministic** and completely predictable from the infinite past  
+  ($V_t = E(X_t \mid X_{t-1}, X_{t-2}, \dots)$).  
+
+
+### Remarks
+- The stochastic part $\sum \psi_j Z_{t-j}$ is the **non-deterministic** component of $X_t$.  
+- In practice, the **General Linear Process (GLP)** with infinite parameters is not feasible.  
+- Instead, it can be effectively approximated by a **finite-order Moving Average (MA) model**:
+
+$$
+X_t \approx \mu + Z_t + \beta_1 Z_{t-1} + \dots + \beta_q Z_{t-q}, 
+\quad \{Z_t\} \sim WN(0,\sigma^2).
+$$
+
+This is the **MA(q)** model, widely used in practice.  
+
+
+### Key Idea
+- **Theory**: Any weakly stationary series = deterministic part + stochastic linear process.  
+- **Practice**: Approximate by **finite-order MA(q)** for estimation and modeling.
+
+## Practical Implications of Wold Decomposition
+
+- **Theoretical result**:  
+  Every weakly stationary time series can be written as an infinite linear process.  
+  $$
+  X_t = \mu + \sum_{j=0}^\infty \psi_j Z_{t-j} + V_t
+  $$
+
+- **Reality**:  
+  - We cannot estimate infinitely many parameters.  
+  - In practice, we approximate with a finite-order model such as MA(q) or ARMA(p,q).
+
+- **Long-term prediction**:  
+  - Finite-order models deviate from the true process as the forecast horizon increases.  
+  - Prediction errors accumulate, similar to a "butterfly effect".
+
+- **Short-term prediction**:  
+  - Finite-order models capture the main dependence structure well.  
+  - Accuracy is highest when the forecast horizon is short.
+
+- **Best practice**:  
+  - Use relatively simple finite-order models.  
+  - Update models dynamically (e.g. rolling estimation, re-fitting) to maintain predictive accuracy over time.
+  
+## MA(q) Model and Its Properties
+
+### Definition
+A Moving Average model of order $q$ is:
+$$
+X_t = \mu + Z_t + \beta_1 Z_{t-1} + \dots + \beta_q Z_{t-q}, 
+\quad \{Z_t\} \sim WN(0,\sigma^2)
+$$
+#### Notation
+$$
+X_t \sim MA(q)
+$$
+
+
+### Properties
+
+- **Mean**
+  $$
+  E(X_t) = \mu
+  $$
+
+- **Variance**
+  $$
+  Var(X_t) = \sigma^2 \Big(1 + \beta_1^2 + \dots + \beta_q^2\Big)
+  $$
+
+- **Autocovariance**
+  $$
+  \gamma_X(k) = \sigma^2 \sum_{j=0}^{q-k} \beta_j \beta_{j+k}, 
+  \quad 0 \le k \le q
+  $$
+  and $\gamma_X(k)=0$ for $k > q$.
+
+- **Autocorrelation (ACF)**
+  $$
+  \rho_X(k) = \frac{\gamma_X(k)}{\gamma_X(0)}, 
+  \quad 0 \le k \le q
+  $$
+  and $\rho_X(k)=0$ for $k > q$.
+
+
+### Key Insights
+- The ACF of an MA(q) **cuts off after lag $q$**.  
+- This is the main identifying feature of an MA model in practice.  
+- Unlike AR models (where ACF decays), MA models show a **sharp cutoff** in their autocorrelation function.
+
+## Special Cases of MA Models
+
+### General Forms
+- **MA(1):**
+  $$
+  X_t = \mu + Z_t + \beta Z_{t-1}
+  $$
+
+- **MA(2):**
+  $$
+  X_t = \mu + Z_t + \beta_1 Z_{t-1} + \beta_2 Z_{t-2}
+  $$
+
+where $\{Z_t\} \sim WN(0,\sigma^2)$.
+
+
+### First-order Moving Average Process, MA(1)
+
+- **Autocovariance Function (ACovF):**
+  $$
+  \gamma(k) =
+  \begin{cases}
+  \sigma^2(1+\beta^2), & k=0 \\
+  \sigma^2\beta, & k=1 \\
+  0, & k>1 \\
+  \gamma(-k), & k<0
+  \end{cases}
+  $$
+
+- **Autocorrelation Function (ACF):**
+  $$
+  \rho(k) =
+  \begin{cases}
+  1, & k=0 \\
+  \dfrac{\beta}{1+\beta^2}, & k=1 \\
+  0, & k>1
+  \end{cases}
+  $$
+
+
+### Key Insight
+- **MA(q)** models have **ACF cutoff at lag $q$**.
+- For MA(1), the ACF is nonzero only at lag 1.
+- For MA(2), the ACF is nonzero up to lag 2, etc.
+
+
+## Example: Correlogram of MA(1) with Positive and Negative $\beta$
+
+We consider the MA(1) model:
+$$
+X_t = \mu + Z_t + \beta Z_{t-1}, \quad \{Z_t\} \sim WN(0, \sigma^2).
+$$
+
+Where $\beta = \pm{0.8}$
 
 ```{r}
-#| echo: false
-2 * 2
+set.seed(2287)
+ma_p <- arima.sim(model = list(ma = 0.8), n = 200)
+
+ma_n <- arima.sim(model = list(ma = -0.8), n = 200)
+
+par(mfrow=c(2,1), mar=c(3,4,1,1), mgp=c(2,0.6,0))
+acf(ma_p)
+acf(ma_n)
 ```
 
-The `echo: false` option disables the printing of code (only output is displayed).
