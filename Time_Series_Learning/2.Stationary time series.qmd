@@ -231,6 +231,7 @@ ex2_prob <- pchisq(ex2_Q,df = ex2_l,lower.tail = FALSE)
 
 ex2_prob
 ```
+
  Here the probability is `r round(ex2_prob,3)`, certainly it lies out of the critical region and we do not reject the null hypothesis.
 
 ![](images/Ex2_1.png)

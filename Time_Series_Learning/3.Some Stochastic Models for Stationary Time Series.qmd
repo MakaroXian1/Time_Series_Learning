@@ -5,7 +5,7 @@ format:
     html-math-method: mathjax
 ---
 
-#Random Process
+# Random Process
 
 ## White Noise
 
@@ -65,8 +65,9 @@ $$
 \sigma^2, & k=0 \\
 0, & k \neq 0
 \end{cases}
-$$
-### The corresponding ACF 
+$$ 
+
+### The corresponding ACF
 
 $$
 \rho_Z(k) = \frac{\gamma_Z(k)}{\gamma_Z(0)} =
@@ -98,9 +99,16 @@ We can build autocorrelated time series models by taking **linear combinations**
 
 ### Definition
 
-A **linear process** is defined as: $$
+A **linear process** is defined as: 
+$$
 X_t = \mu + \sum_{j=0}^\infty \psi_j Z_{t-j},
-$$ where: - $\{Z_t\} \sim WN(0, \sigma^2)$ is white noise, - $\mu$ is a constant (the mean), - $\psi_j$ are real coefficients, - the infinite series converges in mean square.
+$$ 
+
+where: 
+- $\{Z_t\} \sim WN(0, \sigma^2)$ is white noise, 
+- $\mu$ is a constant (the mean), 
+- $\psi_j$ are real coefficients, 
+- the infinite series converges in mean square.
 
 ### Notes
 
@@ -119,25 +127,31 @@ $$ where: - $\{Z_t\} \sim WN(0, \sigma^2)$ is white noise, - $\mu$ is a constant
 
 ## Statistical Properties of a Linear Process
 
-Consider $$
+Consider 
+$$
 X_t = \mu + \sum_{j=0}^\infty \psi_j Z_{t-j}, \quad \{Z_t\} \sim WN(0,\sigma^2).
 $$
 
 ### Mean
 
-Since $E(Z_t)=0$, $$
+Since $E(Z_t)=0$, 
+$$
 E(X_t) = \mu
 $$
 
 ### Variance
 
-Because white noise terms are uncorrelated, $$
+Because white noise terms are uncorrelated, 
+$$
 Var(X_t) = \sigma^2 \sum_{j=0}^\infty \psi_j^2
 $$
 
--   For $Var(X_t)$ to be finite, we require: $$
+-   For $Var(X_t)$ to be finite, we require: 
+    $$
     \sum_{j=0}^\infty \psi_j^2 < \infty
-    $$ This is the **square summability condition**.
+    $$ 
+    
+This is the **square summability condition**.
 
 ### Why is this condition necessary?
 
@@ -146,14 +160,18 @@ $$
 
 ### Stronger Condition
 
-Sometimes we require a stricter condition: $$
+Sometimes we require a stricter condition: 
+$$
 \sum_{j=0}^\infty |\psi_j| < \infty
-$$ - Ensures convergence **almost surely (a.s.)** or **in mean**.\
+$$ 
+
+- Ensures convergence **almost surely (a.s.)** or **in mean**.\
 - Stronger than square summability.
 
 ## Autocovariance and Autocorrelation of a Linear Process
 
-Consider $$
+Consider 
+$$
 X_t = \mu + \sum_{j=0}^\infty \psi_j Z_{t-j}, 
 \quad \{Z_t\} \sim WN(0,\sigma^2).
 $$
@@ -204,7 +222,8 @@ $$
 X_t = \mu + \sum_{j=0}^\infty \psi_j Z_{t-j} + V_t,
 $$
 
-where: - $\{Z_t\}$ is a white noise sequence with zero mean and finite variance,\
+where: 
+- $\{Z_t\}$ is a white noise sequence with zero mean and finite variance,\
 - $\{\psi_j\}$ are absolutely summable ($\sum_{j=0}^\infty |\psi_j| < \infty$),\
 - $V_t$ is **deterministic** and completely predictable from the infinite past\
 ($V_t = E(X_t \mid X_{t-1}, X_{t-2}, \dots)$).
@@ -237,54 +256,69 @@ This is the **MA(q)** model, widely used in practice.
 
 -   **Reality**:
 
-    -   We cannot estimate infinitely many parameters.\
-    -   In practice, we approximate with a finite-order model such as MA(q) or ARMA(p,q).
+-   We cannot estimate infinitely many parameters.\
+
+-   In practice, we approximate with a finite-order model such as MA(q) or ARMA(p,q).
 
 -   **Long-term prediction**:
 
-    -   Finite-order models deviate from the true process as the forecast horizon increases.\
-    -   Prediction errors accumulate, similar to a "butterfly effect".
+-   Finite-order models deviate from the true process as the forecast horizon increases.\
+
+-   Prediction errors accumulate, similar to a "butterfly effect".
 
 -   **Short-term prediction**:
 
-    -   Finite-order models capture the main dependence structure well.\
-    -   Accuracy is highest when the forecast horizon is short.
+-   Finite-order models capture the main dependence structure well.\
+
+-   Accuracy is highest when the forecast horizon is short.
 
 -   **Best practice**:
 
-    -   Use relatively simple finite-order models.\
-    -   Update models dynamically (e.g. rolling estimation, re-fitting) to maintain predictive accuracy over time.
+-   Use relatively simple finite-order models.\
+
+-   Update models dynamically (e.g. rolling estimation, re-fitting) to maintain predictive accuracy over time.
 
 ## MA(q) Model and Its Properties
 
 ### Definition
 
-A Moving Average model of order $q$ is: $$
+A Moving Average model of order $q$ is: 
+$$
 X_t = \mu + Z_t + \beta_1 Z_{t-1} + \dots + \beta_q Z_{t-q}, 
 \quad \{Z_t\} \sim WN(0,\sigma^2)
-$$ \#### Notation $$
+$$ 
+
+#### Notation
+
+$$
 X_t \sim MA(q)
 $$
 
 ### Properties
 
--   **Mean** $$
+-   **Mean** 
+    $$
     E(X_t) = \mu
     $$
 
--   **Variance** $$
+-   **Variance** 
+    $$
     Var(X_t) = \sigma^2 \Big(1 + \beta_1^2 + \dots + \beta_q^2\Big)
     $$
 
--   **Autocovariance** $$
+-   **Autocovariance** 
+    $$
     \gamma_X(k) = \sigma^2 \sum_{j=0}^{q-k} \beta_j \beta_{j+k}, 
     \quad 0 \le k \le q
-    $$ and $\gamma_X(k)=0$ for $k > q$.
+    $$ 
+    and $\gamma_X(k)=0$ for $k > q$.
 
--   **Autocorrelation (ACF)** $$
+-   **Autocorrelation (ACF)** 
+    $$
     \rho_X(k) = \frac{\gamma_X(k)}{\gamma_X(0)}, 
     \quad 0 \le k \le q
-    $$ and $\rho_X(k)=0$ for $k > q$.
+    $$ 
+    and $\rho_X(k)=0$ for $k > q$.
 
 ### Key Insights
 
@@ -301,7 +335,8 @@ $$
     X_t = \mu + Z_t + \beta Z_{t-1}
     $$
 
--   **MA(2):** $$
+-   **MA(2):** 
+    $$
     X_t = \mu + Z_t + \beta_1 Z_{t-1} + \beta_2 Z_{t-2}
     $$
 
@@ -309,7 +344,8 @@ where $\{Z_t\} \sim WN(0,\sigma^2)$.
 
 ### First-order Moving Average Process, MA(1)
 
--   **Autocovariance Function (ACovF):** $$
+-   **Autocovariance Function (ACovF):** 
+    $$
     \gamma(k) =
     \begin{cases}
     \sigma^2(1+\beta^2), & k=0 \\
@@ -319,7 +355,8 @@ where $\{Z_t\} \sim WN(0,\sigma^2)$.
     \end{cases}
     $$
 
--   **Autocorrelation Function (ACF):** $$
+-   **Autocorrelation Function (ACF):** 
+    $$
     \rho(k) =
     \begin{cases}
     1, & k=0 \\
@@ -336,7 +373,8 @@ where $\{Z_t\} \sim WN(0,\sigma^2)$.
 
 ## Example: Correlogram of MA(1) with Positive and Negative $\beta$
 
-We consider the MA(1) model: $$
+We consider the MA(1) model: 
+$$
 X_t = \mu + Z_t + \beta Z_{t-1}, \quad \{Z_t\} \sim WN(0, \sigma^2).
 $$
 
@@ -352,9 +390,10 @@ par(mfrow=c(2,1), mar=c(3,4,1,1), mgp=c(2,0.6,0))
 acf(ma_p)
 acf(ma_n)
 ```
+
 ## Autocovariance of MA(q) with White Noise
 
-For the MA(q) process:
+For the MA(q) process: 
 $$
 X_t = \mu + Z_t + \beta_1 Z_{t-1} + \beta_2 Z_{t-2} + \dots + \beta_q Z_{t-q},
 \quad \{Z_t\} \sim WN(0,\sigma^2),
@@ -362,28 +401,29 @@ $$
 
 the covariance with lagged noise terms is:
 
-- For $k=0$:  
-  $$
-  Cov(X_t, Z_t) = \sigma^2
-  $$
+-   For $ k=0$:\
+    $$
+    Cov(X_t, Z_t) = \sigma^2
+    $$
 
-- For $1 \leq k \leq q$:  
-  $$
-  Cov(X_t, Z_{t-k}) = \beta_k \sigma^2
-  $$
+-   For $1 \leq k \leq q$:\
+    $$
+    Cov(X_t, Z_{t-k}) = \beta_k \sigma^2
+    $$
 
-- For $k > q$:  
-  $$
-  Cov(X_t, Z_{t-k}) = 0
-  $$
+-   For $k > q$:\
+    $$
+    Cov(X_t, Z_{t-k}) = 0
+    $$
 
 ### Key Point
-- $X_t$ only depends on $q$ past noise terms.  
-- Beyond lag $q$, there is **no correlation** with $Z_{t-k}$.  
+
+-   $X_t$ only depends on $q$ past noise terms.\
+-   Beyond lag $q$, there is **no correlation** with $Z_{t-k}$.
 
 ### Autocovariance Function (ACovF)
 
-\[
+$$ 
 \gamma_X(k) =
 \begin{cases}
 \sigma^2 \left(1 + \beta_1^2 + \beta_2^2 + \dots + \beta_q^2 \right), & k=0 \\[1em]
@@ -393,13 +433,243 @@ the covariance with lagged noise terms is:
 \end{cases}
 $$
 
----
 
 ### Autocorrelation Function (ACF)
 
-\[
+$$
 \rho_X(k) = \frac{\gamma_X(k)}{\gamma_X(0)}, \quad k \in \mathbb{Z}
-\]
+$$
+
 
 - For $k > q$: $\rho_X(k) = 0$  
 - For $|k| \le q$: $\rho_X(k)$ is nonzero (depends on $\beta_j$)
+
+## Correlogram of MA(q) Process
+
+-   The ACF of an MA(q) process has a **distinctive cut-off property**:
+    -   Nonzero autocorrelations only at lags $0,1,\dots,q$.
+    -   Zero autocorrelations for all lags $>q$.
+-   **Identification rule**:
+    -   Count the number of significant spikes in the ACF.
+    -   The lag $q$ at which the ACF cuts off indicates the MA order.
+
+### Example
+
+-   If ACF is nonzero at lags 1 and 2, and zero afterwards → MA(2).
+-   If ACF is nonzero only at lag 1 → MA(1).
+
+## Example: MA(2) and its plots
+
+```{r}
+ma2 <-  arima.sim(model = list(ma = c(-0.5,0.3)), n = 600)
+par(mfrow=c(2,1), mar=c(3,4,1,1), mgp=c(2,0.6,0)) 
+ts.plot(ma2)
+acf(ma2)
+
+```
+
+## Operators Useful in Theoretical Development of Time Series Models
+
+### The Backshift Operator
+
+Many time series models can be simplified using a well-known mathematical operator known as the **backshift operator**.\
+This is denoted as $B$. Some authors also call this the **lag operator** and denote it by $L$.
+
+The backshift operator $B$ (or $L$) is defined as an operator which shifts a variable back by one time unit. That is:
+
+$$
+B X_t = X_{t-1}.
+$$
+
+It is clear that:
+
+-   $B^2 X_t = B(BX_t) = B X_{t-1} = X_{t-2}$
+
+-   $B^3 X_t = B(B^2 X_t) = B X_{t-2} = X_{t-3}$
+
+-   In general, $$
+    B^j X_t = X_{t-j}, \quad j \geq 0
+    $$
+
+**Note:** It is clear that
+
+$$
+B^0 X_t = X_t,
+$$
+
+and hence $B^0$ can be considered as the **identity operator**, i.e. $B^0 \equiv I$.
+
+#### MA(q) in Backshift Operator Form
+
+Since $BZ_t = Z_{t-1}$, we can rewrite the MA(q) model as:
+
+$$
+X_t = \mu + (1 + \beta_1 B + \beta_2 B^2 + \cdots + \beta_q B^q) Z_t.
+$$
+
+
+#### MA Polynomial Form
+
+Define the MA polynomial (or MA operator) as:
+
+$$
+\beta(B) = 1 + \beta_1 B + \beta_2 B^2 + \cdots + \beta_q B^q.
+$$
+
+Then the compact form of the MA(q) model is:
+
+$$
+X_t = \mu + \beta(B) Z_t.
+$$
+
+### The Differencing Operator
+
+The lag-1 differencing of a time series is defined as:
+
+$$
+X_t - X_{t-1}.
+$$
+
+This can be expressed in terms of the backshift operator $B$:
+
+$$
+X_t - X_{t-1} = X_t - B X_t = (1 - B) X_t.
+$$
+
+
+#### Definition
+
+The operator $(1 - B)$ can be considered as the **differencing operator**, denoted by:
+
+$$
+\Delta = 1 - B.
+$$
+
+
+#### Higher-order Differencing
+
+To apply lag-1 differencing repeatedly $j$ times, use:
+
+$$
+\Delta^j = (1 - B)^j.
+$$
+
+
+## Theory of Invertibility of MA Processes
+
+Recall that an MA($q$) model relates the current observation $X_t$ with $Z_t$ together with $q$ past or historical values $Z_{t-1}, Z_{t-2}, \dots, Z_{t-q}$ such that:
+
+$$
+X_t = Z_t + \beta_1 Z_{t-1} + \beta_2 Z_{t-2} + \cdots + \beta_q Z_{t-q}
+     = \beta(B) Z_t, \tag{*}
+$$
+
+### Invertible Representation
+
+Under certain regularity conditions, we can rewrite this MA($q$) model in the following equivalent form, representing $Z_t$ in terms of the observed values $X_t, X_{t-1}, \dots$:
+
+$$
+Z_t = [\beta(B)]^{-1} X_t = \sum_{j=0}^{\infty} \eta_j X_{t-j}, \tag{**}
+$$
+
+where $\eta_0 = 1$ and
+
+$$
+\sum_{j=0}^{\infty} |\eta_j|^2 < \infty.
+$$
+
+### Interpretation
+
+- The representation in (**) is useful because the unobservable $Z_t$ is now expressed as a linear combination of the observable $X_{t-j}$’s.  
+- This representation is known as the **invertible solution** to the MA($q$) model in (*).  
+- In practice, invertibility ensures that we can estimate and work with $Z_t$ indirectly via the observed data $X_t$.
+
+
+## Invertibility of MA(1) Processes
+
+**Theorem:**  
+
+The MA(1) process given by
+
+$$
+X_t = Z_t - \beta Z_{t-1}
+$$
+
+is invertible if $|\beta| < 1$.
+
+
+Using the binomial expansion:
+
+$$
+(1 - \beta B)^{-1} = \sum_{j=0}^\infty (\beta B)^j = \sum_{j=0}^\infty \beta^j B^j,
+$$
+
+we obtain the invertible representation:
+
+$$
+Z_t = (1 - \beta B)^{-1} X_t 
+    = \sum_{j=0}^\infty \beta^j B^j X_t 
+    = \sum_{j=0}^\infty \beta^j X_{t-j}.
+$$
+
+## Invertible Solutions to MA($q$) Processes
+
+Suppose that $\{X_t\}$ is an $MA(q)$ process satisfying
+
+$$
+X_t = \beta(B) Z_t, \quad \{Z_t\} \sim WN(0,\sigma^2),
+$$
+
+where
+
+$$
+\beta(B) = 1 + \beta_1 B + \cdots + \beta_q B^q.
+$$
+
+
+#### Invertible Representation
+
+We can write
+$$
+Z_t = [\beta(B)]^{-1} X_t.
+$$
+
+Suppose that the power series expansion for $[\beta(B)]^{-1}$ exists. Then
+
+$$
+[\beta(B)]^{-1} = I + a_1 B + a_2 B^2 + \cdots,
+$$
+so that
+
+$$
+Z_t = \Big(\sum_{j=0}^\infty a_j B^j\Big) X_t
+    = \sum_{j=0}^\infty a_j X_{t-j},
+$$
+
+where the coefficients $\{a_j\}$ are square-summable, i.e.
+
+$$
+\sum_{j=0}^\infty a_j^2 < \infty.
+$$
+
+
+#### Theorem
+
+Consider the MA($q$) process given by
+
+$$
+X_t = \beta(B) Z_t, \quad \{Z_t\} \sim WN(0,\sigma^2).
+$$
+
+If all the roots of the associated algebraic equation
+
+$$
+\beta(u) = 0
+$$
+
+are outside the unit circle (i.e. $|u_i| > 1$, for $i = 1,2,\dots,q$), then there is a valid invertible solution such that
+
+$$
+Z_t = \beta(B)^{-1} X_t = \sum_{j=0}^\infty a_j X_{t-j}, 
+\quad \sum_{j=0}^\infty |a_j|^2 < \infty.
+$$
